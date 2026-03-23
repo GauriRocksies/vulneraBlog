@@ -1,0 +1,251 @@
+{% extends 'base.html' %} {% load static %} {% load blog_extras %} {% block
+title %}{{ profile_user.display_name }} — VulneraBlog{% endblock %} {% block
+extra_css %}<link rel="stylesheet" href="{% static 'css/profile.css' %}" />{%
+endblock %} {% block content %}
+<div class="profile-page">
+  <!-- ── Profile Header ──────────────────────── -->
+  <div class="profile-header">
+    <div class="profile-avatar-wrapper">
+      {% if profile_user.avatar %}
+      <img
+        src="{{ profile_user.avatar.url }}"
+        alt="{{ profile_user.display_name }}"
+        class="profile-avatar"
+      />
+      {% else %}
+      <div class="profile-avatar profile-avatar--placeholder">
+        {{ profile_user.display_name|first|upper }}
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="profile-info">
+      <h1 class="profile-name">{{ profile_user.display_name }}</h1>
+      <p class="profile-user-id">USER ID: {{ profile_user.user_id_code }}</p>
+      {% if profile_user.role %}
+      <p class="profile-role">{{ profile_user.role }}</p>
+      {% endif %}
+
+      <div class="profile-actions">
+        {% if is_own_profile %}
+        <a href="{% url 'edit_profile' %}" class="btn-edit-profile">
+          ✏️ Edit Profile
+        </a>
+        <a href="{% url 'edit_profile' %}" class="btn-settings">Settings</a>
+        {% else %}
+        <button
+          class="btn-follow {% if is_following %}following{% endif %}"
+          id="followBtn"
+          data-url="{% url 'follow_user' username=profile_user.username %}"
+          data-username="{{ profile_user.username }}"
+        >
+          {% if is_following %}Following{% else %}Follow{% endif %}
+        </button>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="profile-stats">
+      <div class="stat-item">
+        <span class="stat-value" id="followersCount"
+          >{{ profile_user.followers_count|format_count }}</span
+        >
+        <span class="stat-label">FOLLOWERS</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value"
+          >{{ profile_user.following_count|format_count }}</span
+        >
+        <span class="stat-label">FOLLOWING</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Profile Body ─────────────────────────── -->
+  <div class="profile-body">
+    <!-- Left sidebar -->
+    <aside class="profile-sidebar">
+      <!-- Following list -->
+      {% if following_list %}
+      <div class="profile-widget">
+        <h4 class="profile-widget-title">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />
+          </svg>
+          Following
+        </h4>
+        {% for follow in following_list %}
+        <div class="following-item">
+          {% if follow.following.avatar %}
+          <img
+            src="{{ follow.following.avatar.url }}"
+            alt="{{ follow.following.display_name }}"
+            class="author-avatar-sm"
+          />
+          {% else %}
+          <div class="author-avatar-sm author-avatar-sm--placeholder">
+            {{ follow.following.display_name|first|upper }}
+          </div>
+          {% endif %}
+          <div class="following-info">
+            <a
+              href="{% url 'profile' username=follow.following.username %}"
+              class="following-name"
+              >@{{ follow.following.username }}</a
+            >
+            {% if follow.following.role %}
+            <span class="following-role"
+              >{{ follow.following.role|upper }}</span
+            >
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+        <a href="#" class="view-all-link"
+          >View all {{ profile_user.following_count }} users</a
+        >
+      </div>
+      {% endif %}
+
+      <!-- About -->
+      {% if profile_user.bio or profile_user.location %}
+      <div class="profile-widget">
+        <h4 class="profile-widget-title">About</h4>
+        {% if profile_user.bio %}
+        <p class="profile-bio">{{ profile_user.bio }}</p>
+        {% endif %} {% if profile_user.location %}
+        <p class="profile-location">📍 {{ profile_user.location }}</p>
+        {% endif %} {% if profile_user.website %}
+        <a
+          href="{{ profile_user.website }}"
+          target="_blank"
+          class="profile-website"
+          >🔗 {{ profile_user.website }}</a
+        >
+        {% endif %}
+      </div>
+      {% endif %}
+    </aside>
+
+    <!-- Main content: posts -->
+    <main class="profile-main">
+      <div class="profile-posts-header">
+        <h3 class="profile-posts-title">Recent Posts</h3>
+        <div class="post-view-toggle">
+          <button class="view-btn active" id="gridViewBtn" title="Grid view">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+            </svg>
+          </button>
+          <button class="view-btn" id="listViewBtn" title="List view">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <line x1="8" y1="6" x2="21" y2="6" />
+              <line x1="8" y1="12" x2="21" y2="12" />
+              <line x1="8" y1="18" x2="21" y2="18" />
+              <line x1="3" y1="6" x2="3.01" y2="6" />
+              <line x1="3" y1="12" x2="3.01" y2="12" />
+              <line x1="3" y1="18" x2="3.01" y2="18" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      {% if posts %}
+      <div class="profile-posts-grid" id="profilePostsGrid">
+        {% for post in posts %}
+        <article class="profile-post-card">
+          {% if post.cover_image %}
+          <a
+            href="{% url 'post_detail' pk=post.pk %}"
+            class="profile-post-img-link"
+          >
+            <img
+              src="{{ post.cover_image.url }}"
+              alt="{{ post.title }}"
+              class="profile-post-img"
+              loading="lazy"
+            />
+          </a>
+          {% else %}
+          <a
+            href="{% url 'post_detail' pk=post.pk %}"
+            class="profile-post-img-link"
+          >
+            <div class="profile-post-img profile-post-img--placeholder">
+              {{ post.get_category_display|upper }}
+            </div>
+          </a>
+          {% endif %}
+          <div class="profile-post-info">
+            <span class="post-category-tag"
+              >{{ post.get_category_display|upper }}</span
+            >
+            <h3 class="profile-post-title">
+              <a href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}</a>
+            </h3>
+            <p class="profile-post-excerpt">
+              {{ post.content|truncatewords:15 }}
+            </p>
+            <div class="profile-post-footer">
+              <span class="profile-post-date"
+                >{{ post.created_at|date:"M d, Y"|upper }}</span
+              >
+              <span class="profile-post-comments"
+                >💬 {{ post.comments_count }}</span
+              >
+            </div>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+
+      <div class="discover-older">
+        <span>DISCOVER OLDER ENTRIES</span>
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <line x1="5" y1="12" x2="19" y2="12" />
+          <polyline points="12,5 19,12 12,19" />
+        </svg>
+      </div>
+
+      {% else %}
+      <div class="empty-state">
+        <p class="empty-state-title">No posts yet.</p>
+        {% if is_own_profile %}
+        <a href="{% url 'upload_post' %}" class="btn-upload-first"
+          >Publish your first post →</a
+        >
+        {% endif %}
+      </div>
+      {% endif %}
+    </main>
+  </div>
+</div>
+{% endblock %} {% block extra_js %}
+<script src="{% static 'js/profile.js' %}"></script>
+{% endblock %}

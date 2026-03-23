@@ -1,0 +1,88 @@
+{% extends 'base.html' %} {% load static %} {% block title %}{{ page_title }} —
+VulneraBlog{% endblock %} {% block extra_css %}<link
+  rel="stylesheet"
+  href="{% static 'css/upload.css' %}"
+/>{% endblock %} {% block content %}
+<div class="upload-container">
+  <div class="upload-header">
+    <h1 class="upload-title">{{ page_title }}</h1>
+    <p class="upload-subtitle">
+      Craft your editorial narrative for the VulneraBlog community.
+    </p>
+  </div>
+
+  <form
+    method="post"
+    enctype="multipart/form-data"
+    class="upload-form"
+    id="uploadForm"
+    novalidate
+  >
+    {% csrf_token %}
+
+    <div class="upload-form-grid">
+      <!-- Left: main content -->
+      <div class="upload-main">
+        <div class="form-group">
+          <label class="form-label">TITLE</label>
+          {{ form.title }} {% if form.title.errors %}<span class="form-error"
+            >{{ form.title.errors.0 }}</span
+          >{% endif %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">CONTENT</label>
+          {{ form.content }} {% if form.content.errors %}<span
+            class="form-error"
+            >{{ form.content.errors.0 }}</span
+          >{% endif %}
+        </div>
+      </div>
+
+      <!-- Right: metadata -->
+      <div class="upload-meta">
+        <div class="form-group">
+          <label class="form-label">CATEGORY</label>
+          {{ form.category }} {% if form.category.errors %}<span
+            class="form-error"
+            >{{ form.category.errors.0 }}</span
+          >{% endif %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">READ TIME (MINUTES)</label>
+          {{ form.read_time }} {% if form.read_time.errors %}<span
+            class="form-error"
+            >{{ form.read_time.errors.0 }}</span
+          >{% endif %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">COVER IMAGE</label>
+          {{ form.cover_image }} {% if form.cover_image.errors %}<span
+            class="form-error"
+            >{{ form.cover_image.errors.0 }}</span
+          >{% endif %}
+          <div class="cover-preview" id="coverPreview"></div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">TAGS</label>
+          {{ form.tag_names }}
+          <p class="form-hint">{{ form.tag_names.help_text }}</p>
+          {% if form.tag_names.errors %}<span class="form-error"
+            >{{ form.tag_names.errors.0 }}</span
+          >{% endif %}
+        </div>
+
+        <div class="upload-actions">
+          <button type="submit" class="btn-publish">Publish Post</button>
+          <a href="{% url 'home' %}" class="btn-cancel">Cancel</a>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %} {% block extra_js %}
+<script src="{% static 'js/base.js' %}"></script>
+{% endblock %}

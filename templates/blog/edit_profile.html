@@ -1,0 +1,79 @@
+{% extends 'base.html' %} {% load static %} {% block title %}Edit Profile —
+VulneraBlog{% endblock %} {% block extra_css %}<link
+  rel="stylesheet"
+  href="{% static 'css/upload.css' %}"
+/>{% endblock %} {% block content %}
+<div class="upload-container">
+  <div class="upload-header">
+    <h1 class="upload-title">Edit Profile</h1>
+    <p class="upload-subtitle">Update your VulneraBlog editorial profile.</p>
+  </div>
+
+  <form
+    method="post"
+    enctype="multipart/form-data"
+    class="upload-form"
+    novalidate
+  >
+    {% csrf_token %}
+
+    <div class="upload-form-grid">
+      <div class="upload-main">
+        <div class="form-row-split">
+          <div class="form-group">
+            <label class="form-label">FIRST NAME</label>
+            {{ form.first_name }} {% if form.first_name.errors %}<span
+              class="form-error"
+              >{{ form.first_name.errors.0 }}</span
+            >{% endif %}
+          </div>
+          <div class="form-group">
+            <label class="form-label">LAST NAME</label>
+            {{ form.last_name }} {% if form.last_name.errors %}<span
+              class="form-error"
+              >{{ form.last_name.errors.0 }}</span
+            >{% endif %}
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">BIO</label>
+          {{ form.bio }} {% if form.bio.errors %}<span class="form-error"
+            >{{ form.bio.errors.0 }}</span
+          >{% endif %}
+        </div>
+      </div>
+
+      <div class="upload-meta">
+        <div class="form-group">
+          <label class="form-label">ROLE / TITLE</label>
+          {{ form.role }}
+        </div>
+        <div class="form-group">
+          <label class="form-label">EMAIL</label>
+          {{ form.email }}
+        </div>
+        <div class="form-group">
+          <label class="form-label">LOCATION</label>
+          {{ form.location }}
+        </div>
+        <div class="form-group">
+          <label class="form-label">WEBSITE</label>
+          {{ form.website }}
+        </div>
+        <div class="form-group">
+          <label class="form-label">AVATAR</label>
+          {{ form.avatar }}
+        </div>
+        <div class="upload-actions">
+          <button type="submit" class="btn-publish">Save Changes</button>
+          <a
+            href="{% url 'profile' username=request.user.username %}"
+            class="btn-cancel"
+            >Cancel</a
+          >
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}

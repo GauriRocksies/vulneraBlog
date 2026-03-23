@@ -1,0 +1,66 @@
+{% extends 'base_auth.html' %} {% block title %}Create Account —
+VulneraBlog{%endblock %} {% block form_content %}
+<div class="auth-header">
+  <h2 class="auth-title">Join the Board</h2>
+  <p class="auth-subtitle">Create your VulneraBlog editorial account.</p>
+</div>
+
+<form method="post" class="auth-form" id="registerForm" novalidate>
+  {% csrf_token %}
+
+  <div class="form-row-split">
+    <div class="form-group">
+      <label class="form-label">FIRST NAME</label>
+      {{ form.first_name }} {% if form.first_name.errors %}
+      <span class="form-error">{{ form.first_name.errors.0 }}</span>
+      {% endif %}
+    </div>
+    <div class="form-group">
+      <label class="form-label">LAST NAME</label>
+      {{ form.last_name }} {% if form.last_name.errors %}
+      <span class="form-error">{{ form.last_name.errors.0 }}</span>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">USERNAME</label>
+    {{ form.username }} {% if form.username.errors %}
+    <span class="form-error">{{ form.username.errors.0 }}</span>
+    {% endif %}
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">EMAIL</label>
+    {{ form.email }} {% if form.email.errors %}
+    <span class="form-error">{{ form.email.errors.0 }}</span>
+    {% endif %}
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">{{ form.password1.label }}</label>
+    {{ form.password1 }} {% if form.password1.errors %}
+    <span class="form-error">{{ form.password1.errors.0 }}</span>
+    {% endif %}
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">{{ form.password2.label }}</label>
+    {{ form.password2 }} {% if form.password2.errors %}
+    <span class="form-error">{{ form.password2.errors.0 }}</span>
+    {% endif %}
+  </div>
+
+  <div class="register-note">
+    Your unique User ID will be generated automatically after registration. Save
+    it — you'll need it to log in.
+  </div>
+
+  <button type="submit" class="btn-signin">Create Account</button>
+
+  <p class="auth-switch-text">
+    Already a member?
+    <a href="{% url 'login' %}" class="auth-switch-link">Sign In</a>
+  </p>
+</form>
+{% endblock %}

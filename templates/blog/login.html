@@ -1,0 +1,42 @@
+{% extends 'base_auth.html' %} {% block title %}Sign In —
+VulneraBlog{%endblock%} {% block form_content %}
+<div class="auth-header">
+  <h2 class="auth-title">Welcome Back</h2>
+  <p class="auth-subtitle">
+    Please enter your credentials to access the editorial board.
+  </p>
+</div>
+
+<form method="post" class="auth-form" id="loginForm" novalidate>
+  {% csrf_token %}
+
+  <div class="form-group">
+    <label class="form-label" for="{{ form.user_id_code.id_for_label }}">
+      {{ form.user_id_code.label }}
+    </label>
+    {{ form.user_id_code }} {% if form.user_id_code.errors %}
+    <span class="form-error">{{ form.user_id_code.errors.0 }}</span>
+    {% endif %}
+  </div>
+
+  <div class="form-group">
+    <label class="form-label" for="{{ form.password.id_for_label }}">
+      {{ form.password.label }}
+    </label>
+    {{ form.password }} {% if form.password.errors %}
+    <span class="form-error">{{ form.password.errors.0 }}</span>
+    {% endif %}
+  </div>
+
+  <div class="form-action-row">
+    <a href="#" class="forgot-link">Forgot Password?</a>
+  </div>
+
+  <button type="submit" class="btn-signin">Sign In</button>
+
+  <p class="auth-switch-text">
+    New to VulneraBlog?
+    <a href="{% url 'register' %}" class="auth-switch-link">Create Account</a>
+  </p>
+</form>
+{% endblock %}

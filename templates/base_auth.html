@@ -1,0 +1,77 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}VulneraBlog{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}" />
+  </head>
+  <body class="auth-body">
+    <div class="auth-page">
+      <!-- Left branding panel -->
+      <div class="auth-left">
+        <div class="auth-left-inner">
+          <div class="auth-brand">
+            <h1 class="brand-title">VulneraBlog</h1>
+            <p class="brand-tagline">
+              The Digital Curator. A sanctuary for intellectual authority and
+              architectural design narratives.
+            </p>
+          </div>
+          <div class="auth-badge">
+            <span class="badge-icon">✦</span>
+            <span class="badge-text">CURATED EXCELLENCE</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right form panel -->
+      <div class="auth-right">
+        <div class="auth-form-wrapper">
+          {% if messages %}
+          <div class="auth-messages">
+            {% for message in messages %}
+            <div class="auth-message auth-message--{{ message.tags }}">
+              {{ message }}
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %} {% block form_content %}{% endblock %}
+
+          <div class="auth-footer-links">
+            <span class="editorial-access">EDITORIAL ACCESS</span>
+            <div class="auth-help-links">
+              <a href="#">❓ HELP</a>
+              <a href="#">🌐 EN</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Page footer -->
+    <footer class="auth-page-footer">
+      <div class="footer-left">
+        <span class="footer-brand">VulneraBlog</span>
+        <span class="footer-copy"
+          >© 2024 VulneraBlog. The Digital Curator.</span
+        >
+      </div>
+      <div class="footer-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Editorial Guidelines</a>
+        <a href="#">Contact</a>
+      </div>
+    </footer>
+
+    <script src="{% static 'js/auth.js' %}"></script>
+  </body>
+</html>
