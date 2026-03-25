@@ -125,19 +125,25 @@ class PostForm(forms.ModelForm):
             }),
         }
 
+    def _apply_tags(self, post):
+        """Parse tag_names and update the post's tags M2M relation."""
+        tag_names_raw = self.cleaned_data.get('tag_names', '')
+        post.tags.clear()
+        for raw_tag in tag_names_raw.split():
+            tag_name = raw_tag.lstrip('#').upper()
+            if tag_name:
+                tag, _ = Tag.objects.get_or_create(name=tag_name)
+                post.tags.add(tag)
+
+    def save_m2m(self):
+        """Called after commit=False + post.save() to apply tags."""
+        self._apply_tags(self.instance)
+
     def save(self, commit=True):
         post = super().save(commit=False)
         if commit:
             post.save()
-            # Process tags from the tag_names field
-            tag_names_raw = self.cleaned_data.get('tag_names', '')
-            if tag_names_raw:
-                post.tags.clear()
-                for raw_tag in tag_names_raw.split():
-                    tag_name = raw_tag.lstrip('#').upper()
-                    if tag_name:
-                        tag, _ = Tag.objects.get_or_create(name=tag_name)
-                        post.tags.add(tag)
+            self._apply_tags(post)
         return post
 
 

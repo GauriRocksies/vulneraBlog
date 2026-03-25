@@ -8,7 +8,6 @@ from . import views
 urlpatterns = [
     # Authentication
     path('login/', views.login_view, name='login'),
-    #path('home/', views.home_view, name='home'),
     path('register/', views.register_view, name='register'),
     path('logout/', views.logout_view, name='logout'),
 
@@ -28,8 +27,9 @@ urlpatterns = [
     path('post/<int:pk>/bookmark/', views.bookmark_post_view, name='bookmark_post'),
     path('comment/<int:pk>/like/', views.like_comment_view, name='like_comment'),
 
-    # Profile
-    path('profile/<str:username>/', views.profile_view, name='profile'),
+    # Profile (edit_profile MUST come before profile/<str:username>/
+    # to avoid Django matching "edit" as a username)
     path('profile/edit/me/', views.edit_profile_view, name='edit_profile'),
+    path('profile/<str:username>/', views.profile_view, name='profile'),
     path('user/<str:username>/follow/', views.follow_user_view, name='follow_user'),
 ]

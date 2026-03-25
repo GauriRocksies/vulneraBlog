@@ -28,21 +28,23 @@
                 >Home</a
               >
             </li>
-            <li>
-              <a
-                href="{% url 'explore' %}"
-                class="nav-link {% if request.resolver_match.url_name == 'explore' %}active{% endif %}"
-                >Explore</a
-              >
-            </li>
-            <li>
-              <a
-                href="{% url 'bookmarks' %}"
-                class="nav-link {% if request.resolver_match.url_name == 'bookmarks' %}active{% endif %}"
-                >Bookmarks</a
-              >
-            </li>
           </ul>
+          <!-- Search bar moved into navbar -->
+          <form method="get" action="{% url 'home' %}" class="navbar-search-form">
+            <input
+              type="text"
+              name="q"
+              value="{{ request.GET.q }}"
+              placeholder="Search posts, authors, topics..."
+              class="navbar-search-input"
+            />
+            <button type="submit" class="navbar-search-btn">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+            </button>
+          </form>
         </div>
 
         <div class="navbar-right">
@@ -61,20 +63,6 @@
             </svg>
             Upload Post
           </a>
-          <button class="nav-icon-btn" id="notifBtn" title="Notifications">
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path
-                d="M12 22c1.1 0 2-.9 2-2H10c0 1.1.9 2 2 2M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"
-              />
-            </svg>
-          </button>
           {% if request.user.is_authenticated %}
           <div class="nav-avatar-wrapper" id="avatarToggle">
             {% if request.user.avatar %}
@@ -129,23 +117,9 @@
 
     <!-- ── Footer ─────────────────────────────────── -->
     <footer class="site-footer">
-      <div class="footer-inner">
-        <div class="footer-left">
-          <span class="footer-brand">VulneraBlog</span>
-          <span class="footer-copy"
-            >© 2024 VulneraBlog. The Digital Curator.</span
-          >
-        </div>
-        <div class="footer-center">
-          <a href="#">Privacy Policy</a>
-          <a href="#">Terms of Service</a>
-          <a href="#">Editorial Guidelines</a>
-          <a href="#">Contact</a>
-        </div>
-        <div class="footer-right">
-          <button class="footer-icon-btn" title="Language">🌐</button>
-          <button class="footer-icon-btn" title="RSS">📡</button>
-        </div>
+      <div class="footer-inner footer-inner--centered">
+        <span class="footer-brand">VulneraBlog</span>
+        <span class="footer-copy">© 2024 VulneraBlog. The Digital Curator.</span>
       </div>
     </footer>
 

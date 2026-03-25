@@ -196,7 +196,7 @@ def upload_post_view(request):
             post = form.save(commit=False)
             post.author = request.user
             post.save()
-            form.save()  # triggers tag processing in form.save()
+            form.save_m2m()  # applies tags without re-saving the post
             messages.success(request, 'Post published successfully!')
             return redirect('post_detail', pk=post.pk)
 
