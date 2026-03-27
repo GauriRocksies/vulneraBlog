@@ -1,28 +1,15 @@
-"""
-Custom authentication backend for VulneraBlog.
-Allows users to log in using their generated user_id_code (e.g. VLR_88920-X)
-instead of a username.
-"""
-
 from django.contrib.auth.backends import BaseBackend
 from .models import User
 
-
-class UserIDBackend(BaseBackend):
-    """
-    Authenticates against User.user_id_code + password.
-    """
-
-    def authenticate(self, request, user_id_code=None, password=None, **kwargs):
-        if user_id_code is None or password is None:
+class UsernameBackend(BaseBackend):
+    def authenticate(self, request, username=None, password=None, **kwargs):
+        if username is None or password is None:
             return None
         try:
-            user = User.objects.get(user_id_code=user_id_code)
+            user = User.objects.get(username__iexact=username)
         except User.DoesNotExist:
-            # Run the default password hasher to reduce timing attack risk
             User().set_password(password)
             return None
-
         if user.check_password(password) and self.user_can_authenticate(user):
             return user
         return None

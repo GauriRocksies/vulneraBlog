@@ -28,6 +28,7 @@ VulneraBlog{%endblock %} {% block form_content %}
     {{ form.username }} {% if form.username.errors %}
     <span class="form-error">{{ form.username.errors.0 }}</span>
     {% endif %}
+    <span class="form-hint">This is your unique handle. You'll use it to sign in.</span>
   </div>
 
   <div class="form-group">
@@ -49,11 +50,6 @@ VulneraBlog{%endblock %} {% block form_content %}
     {{ form.password2 }} {% if form.password2.errors %}
     <span class="form-error">{{ form.password2.errors.0 }}</span>
     {% endif %}
-  </div>
-
-  <div class="register-note">
-    Your unique User ID will be generated automatically after registration. Save
-    it — you'll need it to log in.
   </div>
 
   <button type="submit" class="btn-signin">Create Account</button>

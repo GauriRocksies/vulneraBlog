@@ -73,7 +73,7 @@ AUTH_USER_MODEL = 'blog.User'
 
 # Custom Authentication Backend (login via user_id_code)
 AUTHENTICATION_BACKENDS = [
-    'blog.auth_backends.UserIDBackend',
+    'blog.auth_backends.UsernameBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
 

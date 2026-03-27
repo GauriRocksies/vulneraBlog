@@ -8,13 +8,13 @@ from .models import User, Post, Comment, Tag
 
 
 class LoginForm(forms.Form):
-    """Login form using VulneraBlog user_id_code."""
-    user_id_code = forms.CharField(
-        label='USERID',
-        max_length=15,
+    """Login form using username + password."""
+    username = forms.CharField(
+        label='USERNAME',
+        max_length=150,
         widget=forms.TextInput(attrs={
-            'placeholder': 'Enter your unique ID',
-            'autocomplete': 'off',
+            'placeholder': 'Enter your username',
+            'autocomplete': 'username',
             'class': 'form-input',
         })
     )
@@ -52,9 +52,11 @@ class RegisterForm(UserCreationForm):
     )
     username = forms.CharField(
         max_length=150,
+        help_text='This will be your unique login handle, like Instagram. Letters, digits, @, ., +, -, _ only.',
         widget=forms.TextInput(attrs={
-            'placeholder': 'Choose a username',
+            'placeholder': 'Choose a username (e.g. mickey_mouse)',
             'class': 'form-input',
+            'autocomplete': 'username',
         })
     )
 
