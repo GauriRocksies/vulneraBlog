@@ -90,3 +90,15 @@ document.querySelectorAll('.form-input').forEach(input => {
         this.style.borderColor = '';
     });
 });
+// ── Password visibility toggle ──────────────────
+function togglePassword() {
+    const password = document.getElementById('password-field');
+
+    if (!password) return;
+
+    if (password.type === "password") {
+        password.type = "text";
+    } else {
+        password.type = "password";
+    }
+}

@@ -379,3 +379,27 @@ body.auth-body {
     .form-row-split { grid-template-columns: 1fr; }
     .footer-links { display: none; }
 }
+/* Password toggle */
+
+.password-wrapper{
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-wrapper .form-input{
+    padding-right: 40px;
+}
+
+.toggle-password{
+    position: absolute;
+    right: 12px;
+    cursor: pointer;
+    font-size: 16px;
+    color: var(--text-secondary);
+    user-select: none;
+}
+
+.toggle-password:hover{
+    color: var(--text-primary);
+}

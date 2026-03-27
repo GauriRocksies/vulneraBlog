@@ -1,0 +1,47 @@
+{% extends 'base_auth.html' %}
+{% block title %}Sign In — VulneraBlog{% endblock %}
+
+{% block form_content %}
+<div class="auth-header">
+  <h2 class="auth-title">Sign In</h2>
+  <p class="auth-subtitle">Access your VulneraBlog account</p>
+</div>
+
+<form method="post" class="auth-form">
+  {% csrf_token %}
+
+  <div class="form-group">
+    <label class="form-label">Username</label>
+    <input
+      type="text"
+      name="username"
+      class="form-input"
+      placeholder="Enter your username"
+      required
+    />
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Password</label>
+
+    <div class="password-wrapper">
+      <input
+        type="password"
+        name="password"
+        id="password-field"
+        class="form-input"
+        placeholder="Enter your password"
+        required
+      />
+
+      <span class="toggle-password" onclick="togglePassword()">👁</span>
+    </div>
+  </div>
+
+  <div class="form-action-row">
+    <a href="{% url 'password_reset' %}" class="forgot-link">Forgot password?</a>
+  </div>
+
+  <button type="submit" class="btn-signin">Sign In</button>
+</form>
+{% endblock %}
