@@ -11,12 +11,12 @@ VulneraBlog{%endblock%} {% block form_content %}
   {% csrf_token %}
 
   <div class="form-group">
-    <label class="form-label" for="{{ form.user_id_code.id_for_label }}">
-      {{ form.user_id_code.label }}
-    </label>
-    {{ form.user_id_code }} {% if form.user_id_code.errors %}
-    <span class="form-error">{{ form.user_id_code.errors.0 }}</span>
-    {% endif %}
+    <label class="form-label" for="{{ form.username.id_for_label }}">
+  {{ form.username.label }}
+</label>
+{{ form.username }} {% if form.username.errors %}
+<span class="form-error">{{ form.username.errors.0 }}</span>
+{% endif %}
   </div>
 
   <div class="form-group">

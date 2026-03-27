@@ -22,7 +22,7 @@ from .forms import LoginForm, RegisterForm, PostForm, CommentForm, ProfileEditFo
 # ──────────────────────────────────────────────
 
 def login_view(request):
-    """Handle user login via user_id_code + password."""
+    """Handle user login via username + password."""
     if request.user.is_authenticated:
         return redirect('home')
 
@@ -31,15 +31,15 @@ def login_view(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
-            user_id_code = form.cleaned_data['user_id_code']
+            username = form.cleaned_data['username']
             password = form.cleaned_data['password']
-            user = authenticate(request, user_id_code=user_id_code, password=password)
+            user = authenticate(request, username=username, password=password)
             if user:
                 login(request, user)
                 next_url = request.GET.get('next', 'home')
                 return redirect(next_url)
             else:
-                messages.error(request, 'Invalid User ID or password. Please try again.')
+                messages.error(request, 'Invalid username or password. Please try again.')
 
     return render(request, 'blog/login.html', {'form': form})
 
