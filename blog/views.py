@@ -12,6 +12,9 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.core.paginator import Paginator
 from django.db.models import Q, Count
+from django.db import connection
+from django.http import HttpResponse
+from django.shortcuts import render
 
 from .models import User, Post, Comment, Follow, Bookmark, Tag
 from .forms import LoginForm, RegisterForm, PostForm, CommentForm, ProfileEditForm
@@ -380,3 +383,46 @@ def follow_user_view(request, username):
         'following': following,
         'followers_count': target_user.followers_count
     })
+
+# This view is intentionally vulnerable to demonstrate SQL injection.
+def vulnerable_search(request):
+    q = request.GET.get("id", "")
+
+    with connection.cursor() as cursor:
+        query = f"SELECT id, title FROM blog_post WHERE id = {q}"
+        cursor.execute(query)
+        rows = cursor.fetchall()
+
+    return HttpResponse(str(rows))
+
+# This view is intentionally vulnerable to demonstrate creating a post via SQL injection.
+def vulnerable_create(request):
+    title = request.GET.get("title", "")
+    body = request.GET.get("body", "")
+
+    with connection.cursor() as cursor:
+        query = f"""
+            INSERT INTO blog_post (
+                author_id,
+                title,
+                content,
+                category,
+                created_at,
+                updated_at,
+                read_time,
+                is_featured
+            )
+            VALUES (
+                1,
+                '{title}',
+                '{body}',
+                'editorial',
+                NOW(),
+                NOW(),
+                5,
+                FALSE
+            )
+        """
+        cursor.execute(query)
+
+    return HttpResponse("Post created")
