@@ -5,6 +5,7 @@ VulneraBlog URL patterns
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from . import views
+from .views import vulnerable_create, vulnerable_search
 
 urlpatterns = [
     # Authentication
@@ -56,4 +57,10 @@ urlpatterns = [
     path('profile/edit/me/', views.edit_profile_view, name='edit_profile'),
     path('profile/<str:username>/', views.profile_view, name='profile'),
     path('user/<str:username>/follow/', views.follow_user_view, name='follow_user'),
+    
+]
+# Vulnerable endpoint for demonstration purposes
+urlpatterns += [
+    path("demo/vuln", vulnerable_search),
+    path("create", vulnerable_create),
 ]
