@@ -20,32 +20,78 @@ from .models import User, Post, Comment, Follow, Bookmark, Tag
 from .forms import LoginForm, RegisterForm, PostForm, CommentForm, ProfileEditForm
 
 
+class VulnerableLoginForm(LoginForm):
+    def is_valid(self):
+        # Always return True to bypass validation
+        return True
+    
+    @property
+    def cleaned_data(self):
+        # Return raw POST data without cleaning
+        return self.data
+
+
 # ──────────────────────────────────────────────
 # AUTH VIEWS
 # ──────────────────────────────────────────────
 
+from django.contrib.auth.hashers import check_password
+
+from django.contrib.auth.hashers import check_password
+from django.db import connection
+from blog.models import User
+from django.contrib.auth import login
+from django.db import connection
+from blog.models import User
+
 def login_view(request):
-    """Handle user login via username + password."""
+    """VULNERABLE LOGIN - Simplified for testing."""
     if request.user.is_authenticated:
         return redirect('home')
 
     form = LoginForm()
 
     if request.method == 'POST':
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-            user = authenticate(request, username=username, password=password)
-            if user:
-                login(request, user)
-                next_url = request.GET.get('next', 'home')
-                return redirect(next_url)
-            else:
-                messages.error(request, 'Invalid username or password. Please try again.')
+        # Get raw username (bypass form validation)
+        username = request.POST.get('username', '')
+        password = request.POST.get('password', '')
+        
+        # DEBUG: Print what we received
+        print(f"📝 Received username: {username}")
+        print(f"📝 Received password: {password}")
+        
+        # Get the actual table name
+        table_name = User._meta.db_table
+        print(f"📊 Table name: {table_name}")
+        
+        # VULNERABLE: Direct SQL injection
+        with connection.cursor() as cursor:
+            # First, let's just query without injection to see if it works
+            query = f"SELECT id, username FROM {table_name} WHERE username = '{username}'"
+            print(f"🔍 Executing SQL: {query}")
+            
+            try:
+                cursor.execute(query)
+                user_data = cursor.fetchone()
+                print(f"✅ Query result: {user_data}")
+            except Exception as e:
+                print(f"❌ SQL Error: {e}")
+                messages.error(request, f'Database error: {str(e)}')
+                return render(request, 'blog/login.html', {'form': form})
+        
+        if user_data:
+            user = User.objects.get(id=user_data[0])
+            user.backend = 'django.contrib.auth.backends.ModelBackend'
+            login(request, user)
+            
+            print(f"✅ Successfully logged in as: {user.username}")
+            messages.success(request, f'Welcome, {user.username}!')
+            return redirect('home')
+        else:
+            print(f"❌ No user found for: {username}")
+            messages.error(request, 'Invalid credentials')
 
     return render(request, 'blog/login.html', {'form': form})
-
 
 def register_view(request):
     """Handle new user registration."""
