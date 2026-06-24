@@ -125,29 +125,61 @@ def logout_view(request):
 
 @login_required
 def home_view(request):
-    """Main feed showing all posts, paginated."""
-    posts = Post.objects.all().select_related('author').prefetch_related('tags', 'likes')
-
-    # Optional search
+    """VULNERABLE - Main feed with SQL injection in search."""
+    
     query = request.GET.get('q', '')
+    posts = []
+    
     if query:
-        posts = posts.filter(
-            Q(title__icontains=query) |
-            Q(content__icontains=query) |
-            Q(author__username__icontains=query)
-        )
-
+        # VULNERABLE: Raw SQL with string concatenation
+        sql = f"""
+            SELECT 
+                blog_post.id,
+                blog_post.title,
+                blog_post.content,
+                blog_post.created_at,
+                blog_post.author_id,
+                blog_user.username,
+                blog_post.cover_image,
+                blog_post.category,
+                blog_post.read_time
+            FROM blog_post 
+            LEFT JOIN blog_user ON blog_post.author_id = blog_user.id
+            WHERE 
+                blog_post.title LIKE '%{query}%' 
+                OR blog_post.content LIKE '%{query}%' 
+                OR blog_user.username LIKE '%{query}%'
+            ORDER BY blog_post.created_at DESC
+        """
+        
+        with connection.cursor() as cursor:
+            cursor.execute(sql)
+            posts_data = cursor.fetchall()
+        
+        # Convert to proper Post objects for template
+        from .models import Post  # Import here
+        post_ids = [row[0] for row in posts_data if row[0] is not None]
+        if post_ids:
+            # Get actual Post objects using ORM (safe) - but only for display
+            posts = list(Post.objects.filter(id__in=post_ids).select_related('author').prefetch_related('tags', 'likes'))
+        else:
+            posts = []
+    else:
+        # No search - use ORM (safe)
+        from .models import Post  # Import here too
+        posts = list(Post.objects.all().select_related('author').prefetch_related('tags', 'likes'))
+    
     # Pagination
     paginator = Paginator(posts, 9)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-
-    # Get user's liked & bookmarked post IDs for template state
+    
+    # Get user's liked & bookmarked post IDs
     liked_ids = set(request.user.liked_posts.values_list('id', flat=True))
     bookmarked_ids = set(
         Bookmark.objects.filter(user=request.user).values_list('post_id', flat=True)
     )
-
+    
     context = {
         'page_obj': page_obj,
         'liked_ids': liked_ids,
@@ -155,7 +187,6 @@ def home_view(request):
         'query': query,
     }
     return render(request, 'blog/home.html', context)
-
 
 @login_required
 def explore_view(request):
