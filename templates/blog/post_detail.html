@@ -28,8 +28,17 @@
     </div>
     {% endif %}
 
+
+    {% comment %} <!-- DEBUG - Add this temporarily to see what's happening -->
+<div style="border:2px solid red; padding:10px; margin:10px;">
+    <h3>DEBUG: Raw content</h3>
+    <pre>{{ post.content }}</pre>
+    <h3>DEBUG: With safe filter</h3>
+    {{ post.content|safe }}
+</div> {% endcomment %}
+
     <!-- BODY -->
-    <div class="article-body">{{ post.content|linebreaks }}</div>
+    <div class="article-body">{{ post.content|safe }}</div>
 
     <!-- COMMENTS -->
     <section class="engagement-section">
@@ -65,7 +74,7 @@
                 >
               </div>
 
-              <p class="comment-text">{{ comment.content }}</p>
+              <p class="comment-text">{{ comment.content|safe }}</p>
 
               <!-- ACTIONS -->
               <div class="comment-actions">
@@ -79,7 +88,7 @@
                   >
                 </button>
 
-                <!-- 🔥 NOW VISIBLE -->
+                
                 <button
                   class="comment-reply-btn"
                   data-comment-id="{{ comment.pk }}"
